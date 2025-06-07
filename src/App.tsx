@@ -1,5 +1,5 @@
 import { Toaster } from "@/components/ui/toaster";
-import { Toaster as Sonner } from "@/components/ui/sonner";
+import { Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
@@ -11,20 +11,42 @@ import Leaderboard from "./pages/Leaderboard";
 import SqlJourney from "./pages/SqlJourney";
 import NotFound from "./pages/NotFound";
 import Badges from "./pages/Badges";
+import { ThemeProvider } from './lib/theme-context'
 import Profile from "./pages/Profile";
 import Challenge from "./pages/Challenge";
 import ProfileEdit from "./pages/ProfileEdit";
 import { ProfileProvider } from "@/context/ProfileContext";
-import {  useUser } from '@clerk/clerk-react';
+import { useUser, RedirectToSignIn } from '@clerk/clerk-react';
 import { WebSocketProvider } from './util/WebsocketProvider'
+import { NotificationProvider } from "@/hooks/NotificationProvider";
 import axios from 'axios';
+
+// Protected Route Component
+const ProtectedRoute = ({ children }) => {
+  const { isLoaded, isSignedIn } = useUser();
+
+  // Show loading state while Clerk is initializing
+  if (!isLoaded) {
+    return (
+      <div className="flex items-center justify-center min-h-screen">
+        <div className="text-lg">Loading...</div>
+      </div>
+    );
+  }
+
+  // Redirect to sign-in page if not authenticated
+  if (!isSignedIn) {
+    return <RedirectToSignIn />;
+  }
+
+  return children;
+};
 
 const App = () => {
   // Create a new QueryClient instance within the component function
   // This ensures it has the correct React context
   const [queryClient] = useState(() => new QueryClient());
-  const { isLoaded, isSignedIn, user } = useUser()
-
+  const { isLoaded, isSignedIn, user } = useUser();
 
   useEffect(() => {
     if (isLoaded && isSignedIn) {
@@ -41,30 +63,102 @@ const App = () => {
 
   return (
     <QueryClientProvider client={queryClient}>
-      <TooltipProvider>
-        <Toaster />
-        <Sonner />
-        <ProfileProvider>
-          <WebSocketProvider url="https://server.datasenseai.com/"> 
-          <BrowserRouter>
-            <Routes>
-              <Route path="/start" element={<Start />} />
-              <Route path="/dashboard" element={<Dashboard />} />
-              <Route path="/badges" element={<Badges />} />
-              <Route path="/challenge" element={<Challenge />} />
-              <Route path="/" element={<Navigate to="/start" replace />} />
-              <Route path="/community" element={<Community />} />
-              <Route path="/leaderboard" element={<Leaderboard />} />
-              <Route path="/sql-journey" element={<SqlJourney />} />
-              <Route path="/profile" element={<Profile />} />
-              <Route path="/profile-edit" element={<ProfileEdit />} />
-              {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
-              <Route path="*" element={<NotFound />} />
-            </Routes>
-          </BrowserRouter>
-          </WebSocketProvider>
-        </ProfileProvider>
-      </TooltipProvider>
+      <ThemeProvider>
+        <TooltipProvider>
+          <Toaster />
+          <Sonner />
+          <ProfileProvider>
+            <WebSocketProvider url="https://server.datasenseai.com/">
+              {/* Wrap NotificationProvider here */}
+              <NotificationProvider>
+                <BrowserRouter>
+                  <Routes>
+                    {/* Public route - accessible without login */}
+                    {  <Route path="/" element={<iframe src="/home.html" style={{ width: '100%', height: '100vh', border: 'none' }} title="External Page" />} /> }
+                    
+                    {/* Protected routes - require authentication */}
+                    <Route 
+                      path="/start" 
+                      element={
+                        <ProtectedRoute>
+                          <Start />
+                        </ProtectedRoute>
+                      } 
+                    />
+                    <Route 
+                      path="/dashboard" 
+                      element={
+                        <ProtectedRoute>
+                          <Dashboard />
+                        </ProtectedRoute>
+                      } 
+                    />
+                    <Route 
+                      path="/badges" 
+                      element={
+                        <ProtectedRoute>
+                          <Badges />
+                        </ProtectedRoute>
+                      } 
+                    />
+                    <Route 
+                      path="/challenge" 
+                      element={
+                        <ProtectedRoute>
+                          <Challenge />
+                        </ProtectedRoute>
+                      } 
+                    />
+                    <Route 
+                      path="/community" 
+                      element={
+                        <ProtectedRoute>
+                          <Community />
+                        </ProtectedRoute>
+                      } 
+                    />
+                    <Route 
+                      path="/leaderboard" 
+                      element={
+                        <ProtectedRoute>
+                          <Leaderboard />
+                        </ProtectedRoute>
+                      } 
+                    />
+                    <Route 
+                      path="/sql-journey" 
+                      element={
+                        <ProtectedRoute>
+                          <SqlJourney />
+                        </ProtectedRoute>
+                      } 
+                    />
+                    <Route 
+                      path="/profile" 
+                      element={
+                        <ProtectedRoute>
+                          <Profile />
+                        </ProtectedRoute>
+                      } 
+                    />
+                    <Route 
+                      path="/profile-edit" 
+                      element={
+                        <ProtectedRoute>
+                          <ProfileEdit />
+                        </ProtectedRoute>
+                      } 
+                    />
+                    
+                    {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
+                    <Route path="*" element={<NotFound />} />
+                  </Routes>
+                </BrowserRouter>
+              </NotificationProvider>
+            </WebSocketProvider>
+          </ProfileProvider>
+        </TooltipProvider>
+      </ThemeProvider>
     </QueryClientProvider>
   );
 };
