@@ -16,7 +16,7 @@ import Challenge from "./pages/Challenge";
 import ProfileEdit from "./pages/ProfileEdit";
 import { ProfileProvider } from "@/context/ProfileContext";
 import {  useUser } from '@clerk/clerk-react';
-import { WebSocketProvider } from './util/WebSocketProvider'
+import { WebSocketProvider } from './util/WebsocketProvider'
 import axios from 'axios';
 
 const App = () => {
