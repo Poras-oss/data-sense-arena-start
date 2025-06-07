@@ -15,9 +15,10 @@ import Profile from "./pages/Profile";
 import Challenge from "./pages/Challenge";
 import ProfileEdit from "./pages/ProfileEdit";
 import { ProfileProvider } from "@/context/ProfileContext";
-import {  useUser } from '@clerk/clerk-react';
+import { useUser } from '@clerk/clerk-react';
 import { WebSocketProvider } from './util/WebsocketProvider'
 import axios from 'axios';
+import { Toaster as SonnerProvider } from 'sonner';
 
 const App = () => {
   // Create a new QueryClient instance within the component function
@@ -42,26 +43,27 @@ const App = () => {
   return (
     <QueryClientProvider client={queryClient}>
       <TooltipProvider>
+        <SonnerProvider position="top-center" richColors />
         <Toaster />
         <Sonner />
         <ProfileProvider>
           <WebSocketProvider url="https://server.datasenseai.com/"> 
-          <BrowserRouter>
-            <Routes>
-              <Route path="/start" element={<Start />} />
-              <Route path="/dashboard" element={<Dashboard />} />
-              <Route path="/badges" element={<Badges />} />
-              <Route path="/challenge" element={<Challenge />} />
-              <Route path="/" element={<Navigate to="/start" replace />} />
-              <Route path="/community" element={<Community />} />
-              <Route path="/leaderboard" element={<Leaderboard />} />
-              <Route path="/sql-journey" element={<SqlJourney />} />
-              <Route path="/profile" element={<Profile />} />
-              <Route path="/profile-edit" element={<ProfileEdit />} />
-              {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
-              <Route path="*" element={<NotFound />} />
-            </Routes>
-          </BrowserRouter>
+            <BrowserRouter>
+              <Routes>
+                <Route path="/start" element={<Start />} />
+                <Route path="/dashboard" element={<Dashboard />} />
+                <Route path="/badges" element={<Badges />} />
+                <Route path="/challenge" element={<Challenge />} />
+                <Route path="/" element={<Navigate to="/start" replace />} />
+                <Route path="/community" element={<Community />} />
+                <Route path="/leaderboard" element={<Leaderboard />} />
+                <Route path="/sql-journey" element={<SqlJourney />} />
+                <Route path="/profile" element={<Profile />} />
+                <Route path="/profile-edit" element={<ProfileEdit />} />
+                {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
+                <Route path="*" element={<NotFound />} />
+              </Routes>
+            </BrowserRouter>
           </WebSocketProvider>
         </ProfileProvider>
       </TooltipProvider>
