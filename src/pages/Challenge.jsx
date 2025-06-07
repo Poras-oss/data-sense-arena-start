@@ -3,7 +3,6 @@
 import React, { useEffect, useState, useMemo } from "react"
 import { Maximize2, Minimize2, Moon, Sun } from "lucide-react"
 import { Avatar, AvatarFallback, AvatarImage } from "../components/ui/avatar"
-import { TopNav } from "../components/challenge/Top-nav"
 import { CodeEditor } from "../components/challenge/Code-editor"
 import { QuestionPanel } from "../components/challenge/Question-panel"
 import { Button } from "../components/ui/button"
