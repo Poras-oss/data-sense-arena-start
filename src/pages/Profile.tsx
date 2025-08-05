@@ -12,6 +12,7 @@ import { Badge } from "@/components/ui/badge";
 import { useState } from "react";
 import ProfileAvatar from "@/components/profile/Avatar";
 import { useNavigate } from "react-router-dom";
+import Navbar from "@/components/Navbar";
 
 const ProfilePage = () => {
   const [activeTab, setActiveTab] = useState("personal");
@@ -32,8 +33,9 @@ const ProfilePage = () => {
   const navigate = useNavigate();
 
   return (
-    <DashboardLayout>
-      <div className="max-w-4xl mx-auto">
+    <DashboardLayout hideSidebar={true}>
+    <Navbar />
+      <div className="max-w-4xl mx-auto mt-20">
         <div className="mb-8">
           <h1 className="text-3xl font-bold text-white mb-2">My Profile</h1>
           <p className="text-dsb-neutral1">Manage your personal information and account settings</p>

@@ -85,54 +85,54 @@ const App = () => {
                         </ProtectedRoute>
                       } 
                     />
-                    <Route 
+                    {/* <Route 
                       path="/dashboard" 
                       element={
                         <ProtectedRoute>
                           <Dashboard />
                         </ProtectedRoute>
                       } 
-                    />
-                    <Route 
+                    /> */}
+                    {/* <Route 
                       path="/badges" 
                       element={
                         <ProtectedRoute>
                           <Badges />
                         </ProtectedRoute>
                       } 
-                    />
-                    <Route 
+                    /> */}
+                    {/* <Route 
                       path="/challenge" 
                       element={
                         <ProtectedRoute>
                           <Challenge />
                         </ProtectedRoute>
                       } 
-                    />
-                    <Route 
+                    /> */}
+                    {/* <Route 
                       path="/community" 
                       element={
                         <ProtectedRoute>
                           <Community />
                         </ProtectedRoute>
                       } 
-                    />
-                    <Route 
+                    /> */}
+                    {/* <Route 
                       path="/leaderboard" 
                       element={
                         <ProtectedRoute>
                           <Leaderboard />
                         </ProtectedRoute>
                       } 
-                    />
-                    <Route 
+                    /> */}
+                    {/* <Route 
                       path="/sql-journey" 
                       element={
                         <ProtectedRoute>
                           <SqlJourney />
                         </ProtectedRoute>
                       } 
-                    />
+                    /> */}
                     <Route 
                       path="/profile" 
                       element={
@@ -141,14 +141,14 @@ const App = () => {
                         </ProtectedRoute>
                       } 
                     />
-                    <Route 
+                    {/* <Route 
                       path="/profile-edit" 
                       element={
                         <ProtectedRoute>
                           <ProfileEdit />
                         </ProtectedRoute>
                       } 
-                    />
+                    /> */}
                     
                     {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
                     <Route path="*" element={<NotFound />} />
