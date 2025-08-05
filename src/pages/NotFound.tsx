@@ -2,6 +2,7 @@
 import { useLocation } from "react-router-dom";
 import { useEffect } from "react";
 import DashboardLayout from "@/components/layout/DashboardLayout";
+import Navbar from "@/components/Navbar";
 
 const NotFound = () => {
   const location = useLocation();
@@ -14,7 +15,8 @@ const NotFound = () => {
   }, [location.pathname]);
 
   return (
-    <DashboardLayout>
+    <DashboardLayout hideSidebar={true}>
+    <Navbar />
       <div className="min-h-screen flex items-center justify-center">
         <div className="neo-glass-dark p-12 rounded-xl text-center">
           <h1 className="text-4xl font-bold mb-4 text-dsb-accent glow-text">404</h1>

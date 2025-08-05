@@ -14,6 +14,7 @@ import { HelpCircle } from 'lucide-react';
 import { useNavigate } from "react-router-dom";
 import { useWebSocketContext } from "@/util/WebsocketProvider";
 import { useNotification } from "@/hooks/NotificationProvider";
+import Navbar from "@/components/Navbar";
 
 type ChallengeType = "bullet_surge" | "rapid_sprint" | "daily_dash";
 type Difficulty = "beginner" | "intermediate" | "advanced";
@@ -339,8 +340,9 @@ const Start = () => {
   );
 
   return (
-    <DashboardLayout>
-      <div className="relative min-h-screen flex flex-col lg:flex-row p-4 md:p-6 gap-6 overflow-hidden">
+    <DashboardLayout hideSidebar={true}>
+      <Navbar />
+      <div className="relative min-h-screen flex flex-col lg:flex-row p-4 md:p-6 gap-6 overflow-hidden mt-20">
         {/* Main Section */}
         <main className="relative z-10 flex-1 lg:w-[70%] space-y-6 md:space-y-8">
           <div className="flex items-center justify-between">
