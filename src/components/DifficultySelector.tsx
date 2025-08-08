@@ -38,7 +38,7 @@ const DifficultySelector = ({ difficulty, onChange }: DifficultySelectorProps) =
             className={cn(
               "text-xs md:text-sm py-2 w-full rounded-md transition-all relative overflow-hidden border shadow-[0_4px_12px_rgba(0,0,0,0.15)] backdrop-blur-md group", 
               difficulty === level 
-                ? "bg-dsb-accent/30 text-white border-dsb-accent/50 shadow-[0_0_15px_rgba(0,226,202,0.2)]" 
+                ? "bg-gradient-to-br from-[#00ffff] to-[#216061] text-white border-dsb-accent/50 shadow-[0_0_15px_rgba(0,226,202,0.2)]" 
                 : "text-white bg-black/30 border-[#333333] hover:border-[#555555] hover:shadow-[0_4px_12px_rgba(0,0,0,0.25)]"
             )} 
             onClick={() => onChange(level as Difficulty)}

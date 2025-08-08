@@ -346,7 +346,7 @@ const Start = () => {
         {/* Main Section */}
         <main className="relative z-10 flex-1 lg:w-[70%] space-y-6 md:space-y-8">
           <div className="flex items-center justify-between">
-            <h1 className="text-2xl md:text-4xl font-bold text-white bg-gradient-to-r from-dsb-accent to-white bg-clip-text text-transparent">
+            <h1 className="text-2xl md:text-4xl font-bold text-white">
               Choose Your Challenge
             </h1>
 
@@ -354,7 +354,7 @@ const Start = () => {
               onClick={handleHelpClick}
               className="p-2 rounded-full bg-[#1a1f2e]/80 hover:bg-[#1a1f2e] border border-[#00E2CA]/20 hover:border-[#00E2CA]/40 transition-all duration-300 group"
             >
-              <HelpCircle className="w-5 h-5 text-[#00E2CA]/60 group-hover:text-[#00E2CA]" />
+              <HelpCircle className="w-5 h-5 text-white group-hover:text-[#00E2CA]" />
               <span className="sr-only">Show Help</span>
             </button>
           </div>
@@ -367,7 +367,7 @@ const Start = () => {
             />
           </div>
 
-          <div className="bg-black/50 backdrop-blur-md rounded-xl p-5 md:p-7 space-y-6 md:space-y-8 border border-dsb-accent/20 shadow-[0_0_20px_rgba(0,226,202,0.1)]">
+          <div className="bg-black/60 backdrop-blur-md rounded-xl p-5 md:p-7 space-y-6 md:space-y-8 border border-dsb-accent/20 shadow-[0_0_20px_rgba(0,226,202,0.1)]">
             <div data-tour="difficulty">
               <DifficultySelector
                 difficulty={difficulty}
@@ -439,7 +439,7 @@ const Start = () => {
             {renderActionButtons()}
           </aside>
         ) : (
-          <aside className="bg-black/60 backdrop-blur-xl rounded-xl p-5 md:p-7 space-y-6 md:space-y-8 relative z-10 border border-dsb-neutral3/40 shadow-[0_0_30px_rgba(0,0,0,0.5)] mt-4">
+          <aside className="bg-black/60  rounded-lg p-5 md:p-7 space-y-6 md:space-y-8 relative z-10 border border-dsb-neutral3/40 mt-4">
             <PlayerStats level={4} streak={3} />
 
             {selectedChallenge && (

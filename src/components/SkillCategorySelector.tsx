@@ -29,7 +29,7 @@ const SkillCategorySelector = ({ skillCategory, onChange }: SkillCategorySelecto
         >
           <ToggleGroupItem
             value="sql"
-            className="border-[#333333] data-[state=on]:bg-dsb-accent/40 data-[state=on]:border-dsb-accent/50 data-[state=on]:shadow-sm text-white relative overflow-hidden backdrop-blur-sm"
+            className="border-[#333333] data-[state=on]:bg-gradient-to-br from-[#00ffff] to-[#216061] data-[state=on]:border-dsb-accent/50 data-[state=on]:shadow-sm text-white relative overflow-hidden backdrop-blur-sm"
           >
             <span className="relative z-10">SQL</span>
             <div className="absolute inset-0 bg-gradient-to-r from-transparent via-dsb-accent/20 to-transparent opacity-0 group-hover:opacity-100 pointer-events-none"></div>

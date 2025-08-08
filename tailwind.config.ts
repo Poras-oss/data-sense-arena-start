@@ -27,7 +27,7 @@ export default {
 				foreground: 'hsl(var(--foreground))',
 				coderpadBGPrimary: '#181F27',
 				dsb: {
-					background: '#0D1219',
+					background: '#ffffff',
 					accent: '#00E2CA', // Teal color
 					accentDark: '#00B8AB', // Darker teal for contrast
 					accentLight: '#56F0E0', // Lighter teal for highlights

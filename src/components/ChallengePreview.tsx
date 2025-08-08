@@ -41,13 +41,27 @@ const ChallengePreview = ({
   };
 
   return (
-    <div className="space-y-5 relative border border-dsb-accent/30 rounded-lg p-5 overflow-hidden bg-gradient-to-br from-black/80 to-dsb-accent/10 backdrop-blur-lg shadow-[0_0_15px_rgba(0,226,202,0.1)]">
+    // <div className="space-y-5 relative border border-dsb-accent/30 rounded-lg p-5 overflow-hidden bg-gradient-to-br from-black/80 to-dsb-accent/10 backdrop-blur-lg shadow-[0_0_15px_rgba(0,226,202,0.1)]">
+    //   {/* Animated gradient overlay */}
+    //   <div className="absolute inset-0 overflow-hidden">
+    //     <div className="absolute w-full h-40 bg-gradient-to-r from-transparent via-dsb-accent/20 to-transparent -skew-y-12 -translate-y-24 animate-scan-line"></div>
+    //   </div>
+      
+    //   <h3 className="text-xl font-bold text-dsb-accent relative z-10 flex items-center">
+    //     <span className="mr-2">⚡</span> 
+    //     Challenge Preview
+    //   </h3>
+
+    <div className="space-y-5 relative border-0  rounded-lg p-5 overflow-hidden bg-gradient-to-br from-[#0A1015] to-[#216061]  shadow-[0_0_15px_rgba(0,226,202,0.1)]">
+    {/* <div className="space-y-5 relative border border-dsb-accent/30 rounded-lg p-5 overflow-hidden bg-gradient-to-br from-[#AA00FF] to-[#216061]  shadow-[0_0_15px_rgba(0,226,202,0.1)]"> */}
+    {/* <div className="space-y-5 relative border border-dsb-accent/30 rounded-lg p-5 overflow-hidden bg-gradient-to-br from-[#00ffff] to-[#216061]  shadow-[0_0_15px_rgba(0,226,202,0.1)]"> */}
+
       {/* Animated gradient overlay */}
       <div className="absolute inset-0 overflow-hidden">
         <div className="absolute w-full h-40 bg-gradient-to-r from-transparent via-dsb-accent/20 to-transparent -skew-y-12 -translate-y-24 animate-scan-line"></div>
       </div>
       
-      <h3 className="text-xl font-bold text-dsb-accent relative z-10 flex items-center">
+      <h3 className="text-xl font-bold text-white relative z-10 flex items-center">
         <span className="mr-2">⚡</span> 
         Challenge Preview
       </h3>
