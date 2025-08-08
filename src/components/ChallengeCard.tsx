@@ -35,8 +35,8 @@ const ChallengeCard: React.FC<ChallengeCardProps> = ({
       className={cn(
         "challenge-card relative group overflow-hidden rounded-xl transition-all duration-300 border shadow-lg cursor-pointer select-none",
         selected
-          ? "bg-gradient-to-br from-black/80 to-dsb-accent/20 border-dsb-accent shadow-[0_0_30px_rgba(0,226,202,0.2)]"
-          : "bg-black/40 border-[#333333] hover:border-dsb-accent/30",
+          ? "bg-gradient-to-br from-[#00ffff] to-[#216061] border-dsb-accent shadow-[0_0_30px_rgba(0,226,202,0.2)]"
+          : "bg-black/60 border border-dsb-neutral3/40 hover:border-dsb-accent/30",
         "backdrop-blur-xl hover:transform hover:scale-[1.02] hover:shadow-[0_0_20px_rgba(0,226,202,0.1)]"
       )}
       onClick={onClick}
@@ -74,7 +74,7 @@ const ChallengeCard: React.FC<ChallengeCardProps> = ({
         <div className="text-center cursor-default select-none">
           <h3 className={cn(
             "text-xl font-bold mb-2 cursor-default select-none",
-            selected ? "text-dsb-accent" : "text-white group-hover:text-dsb-accent/80"
+            selected ? "text-white" : "text-dsb-accent group-hover:text-dsb-accent/80"
           )} style={{ userSelect: 'none' }}>{name}</h3>
         </div>
 

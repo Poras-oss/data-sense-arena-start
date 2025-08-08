@@ -23,7 +23,7 @@ const Navbar = () => {
 
   return (
     <header
-      className="w-full z-50 bg-black/80 border-b border-[#333333] shadow-xl flex items-center justify-between px-6 h-20 fixed top-0 left-0 right-0"
+      className="w-full z-50 bg-[#008B8B] border-0  shadow-xl flex items-center justify-between px-6 h-20 fixed top-0 left-0 right-0"
       style={{ minHeight: "5rem" }}
     >
       {/* Logo */}
@@ -31,7 +31,7 @@ const Navbar = () => {
         <img
           src="/images/logo.png"
           alt="Logo"
-          className="h-7 md:h-9 rounded-lg shadow-lg"
+          className="h-7 md:h-9"
         />
       </div>
 

@@ -46,9 +46,9 @@ const PlayerStats: React.FC<PlayerStatsProps> = ({ level, streak }) => {
         </div>
       </div>
       
-      <div className="flex items-center justify-between p-3 bg-black/50 backdrop-blur-xl rounded-lg border border-dsb-neutral3/40 shadow-[0_4px_12px_rgba(0,0,0,0.2)]">
+      <div className="flex items-center justify-between p-3 bg-transparent backdrop-blur-xl rounded-lg border border-dsb-neutral3/40 shadow-[0_4px_12px_rgba(0,0,0,0.2)]">
         <div className="text-sm text-dsb-neutral1 flex items-center">
-          <div className="w-1 h-8 bg-gradient-to-t from-dsb-accent/40 to-dsb-accent/70 mr-3 rounded"></div>
+          <div className="w-1 h-8 bg-gradient-to-br from-[#00ffff] to-[#216061] mr-3 rounded"></div>
           Current streak:
         </div>
         <div className="flex items-center justify-center bg-black/70 px-4 py-1.5 rounded-md border border-dsb-neutral3/50">

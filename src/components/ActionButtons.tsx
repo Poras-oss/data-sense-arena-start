@@ -304,7 +304,7 @@ const ActionButtons = ({
       {!isMobile && (
         <Button
           variant="outline"
-          className="w-full border-dsb-neutral3 text-dsb-neutral1 hover:text-white hover:bg-dsb-neutral3 backdrop-blur-md group"
+          className="w-full bg-transparent border-dsb-neutral3 text-dsb-neutral1 hover:text-white hover:bg-dsb-neutral3 backdrop-blur-md group"
           onClick={onReset}
         >
           <ArrowLeft className="w-4 h-4 mr-2 group-hover:translate-x-[-2px] transition-transform" />
