@@ -28,11 +28,13 @@ const Navbar = () => {
     >
       {/* Logo */}
       <div className="flex items-center gap-3">
+      <Link to="https://practice.datasenseai.com/">
         <img
           src="/images/logo.png"
           alt="Logo"
           className="h-7 md:h-9"
         />
+      </Link>
       </div>
 
       {/* Nav Items */}

@@ -346,7 +346,7 @@ const Start = () => {
         {/* Main Section */}
         <main className="relative z-10 flex-1 lg:w-[70%] space-y-6 md:space-y-8">
           <div className="flex items-center justify-between">
-            <h1 className="text-2xl md:text-4xl font-bold text-white">
+            <h1 className="text-2xl md:text-4xl font-bold text-white glow-text-subtle">
               Choose Your Challenge
             </h1>
 
