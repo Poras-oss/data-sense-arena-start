@@ -101,14 +101,14 @@ const App = () => {
                         </ProtectedRoute>
                       } 
                     /> */}
-                    {/* <Route 
+                    <Route 
                       path="/challenge" 
                       element={
                         <ProtectedRoute>
                           <Challenge />
                         </ProtectedRoute>
                       } 
-                    /> */}
+                    />
                     {/* <Route 
                       path="/community" 
                       element={
