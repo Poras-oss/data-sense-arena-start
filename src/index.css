@@ -83,6 +83,16 @@
     /* Adding explicit black background */
   }
 }
+@keyframes flip {
+  0% { transform: rotateY(0deg); }
+  50% { transform: rotateY(180deg); }
+  100% { transform: rotateY(360deg); }
+}
+
+.logo-flip {
+  animation: flip 5s linear infinite; /* adjust speed */
+  transform-style: preserve-3d;
+}
 
 @layer utilities {
   .scrollbar-thin {

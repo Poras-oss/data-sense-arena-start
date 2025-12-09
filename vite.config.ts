@@ -9,7 +9,7 @@ const monacoEditorPlugin = (monacoEditorPluginImport as any).default || monacoEd
 export default defineConfig(({ mode }) => ({
   server: {
     host: "::",
-    port: 8081,
+    port: 8080,
   },
   plugins: [
     react(),

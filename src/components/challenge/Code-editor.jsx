@@ -8,17 +8,36 @@ import axios from 'axios';
 import { useWebSocketContext } from '@/util/WebsocketProvider'
 
 
-export function CodeEditor({ 
+export function CodeEditor({
   subject = 'sql',
   questionData,
   onResultUpdate,
-sendDataToParent }) {
+  sendDataToParent,
+  hideOutput = false,
+  externalOutput,
+  externalSetOutput,
+  externalError,
+  externalSetError,
+  externalIsProcessing,
+  externalSetIsProcessing
+}) {
   const { theme } = useTheme();
   const editorRef = useRef(null);
   const containerRef = useRef(null);
-  const [output, setOutput] = useState(null);
-  const [error, setError] = useState('');
-  const [isProcessing, setIsProcessing] = useState(false);
+
+  // Local state
+  const [localOutput, setLocalOutput] = useState(null);
+  const [localError, setLocalError] = useState('');
+  const [localIsProcessing, setLocalIsProcessing] = useState(false);
+
+  // Use external state if provided, otherwise local
+  const output = externalOutput !== undefined ? externalOutput : localOutput;
+  const setOutput = externalSetOutput || setLocalOutput;
+  const error = externalError !== undefined ? externalError : localError;
+  const setError = externalSetError || setLocalError;
+  const isProcessing = externalIsProcessing !== undefined ? externalIsProcessing : localIsProcessing;
+  const setIsProcessing = externalSetIsProcessing || setLocalIsProcessing;
+
   const [feedback, setFeedback] = useState(null);
   const [showFeedback, setShowFeedback] = useState(false);
   const { socket, isConnected } = useWebSocketContext()
@@ -84,12 +103,12 @@ sendDataToParent }) {
   };
 
   const handleSQLExecution = async (code, isSubmission) => {
-    
+
     const response = await axios.get(
       `https://server.datasenseai.com/execute-sql/query?q=${encodeURIComponent(code)}`
     );
     const result = response.data;
-    
+
     if (!isSubmission) {
       setOutput(result);
       return;
@@ -102,7 +121,7 @@ sendDataToParent }) {
   };
 
   const handlePythonExecution = async (code, isSubmission) => {
-  
+
     if (!isSubmission) {
       // Use Piston API for running code and seeing output
       const combinedCode = questionData.test_cases.map(
@@ -120,7 +139,7 @@ sendDataToParent }) {
       });
 
       const data = await response.json();
-      
+
       if (data.run) {
         if (data.run.stdout) setOutput(data.run.stdout);
         if (data.run.stderr) setError(data.run.stderr);
@@ -132,7 +151,7 @@ sendDataToParent }) {
     const allTestCasesPassed = await checkAllTestCases(code, questionData.test_cases);
     handleSubmissionResult(allTestCasesPassed);
 
-   
+
   };
 
 
@@ -161,7 +180,7 @@ sendDataToParent }) {
 
 
       return true;
-    
+
     } catch (error) {
       console.error('Error executing test cases:', error);
 
@@ -172,31 +191,31 @@ sendDataToParent }) {
   const compareResults = (userResults, expectedOutput) => {
     // Handle error case
     if (userResults.error === true) return false;
-  
+
     // Get the rows from expected output
     const expectedRows = expectedOutput.rows;
-  
+
     // Early return if lengths don't match
     if (userResults.length !== expectedRows.length) {
       return false;
     }
-  
+
     // Convert both result sets to arrays of stringified sorted values
     const expectedRowStrings = expectedRows
       .map(row => JSON.stringify(Object.values(row).sort()))
       .sort();
-    
+
     const userRowStrings = userResults
       .map(row => JSON.stringify(Object.values(row).sort()))
       .sort();
-  
+
     // Compare the sorted string arrays
     for (let i = 0; i < expectedRowStrings.length; i++) {
       if (expectedRowStrings[i] !== userRowStrings[i]) {
         return false;
       }
     }
-  
+
     return true;
   };
 
@@ -216,11 +235,11 @@ sendDataToParent }) {
       });
     }
 
-    if(isCorrect) {
+    if (isCorrect) {
       const currentGame = JSON.parse(localStorage.getItem('currentGame'));
 
       handleClick();
-      
+
       socket.emit('gameResult', {
         gameId: currentGame.gameId,
         winnerSocketId: socket.id,
@@ -232,7 +251,7 @@ sendDataToParent }) {
           console.error('Failed to emit game result:', response?.error || 'Unknown error');
         }
       });
-      
+
       console.log('its correct and the socket should have emitted the event');
     }
   };
@@ -248,131 +267,72 @@ sendDataToParent }) {
   };
 
   return (
-    <div className="space-y-4">
-      <div className={`${theme === 'dark' ? 'bg-[#2B3440]' : 'bg-gray-100'} rounded-xl overflow-hidden`}>
-        <div className={`flex items-center gap-2 px-4 py-3 border-b ${
-          theme === 'dark' ? 'border-[#3f5264]' : 'border-gray-300'
-        }`}>
-          <div className={`text-sm font-medium ${
-            theme === 'dark' ? 'text-white' : 'text-gray-600'
-          }`}>
-            {subject === 'sql' ? 'SQL' : 'Python'}
-          </div>
-        </div>
-        <div
-          ref={containerRef}
-          className="min-h-[300px] md:min-h-[600px]"
-        />
+    <div className="flex flex-col h-full bg-white dark:bg-[#1e1e1e] relative overflow-hidden">
+      {/* Editor Header */}
+      <div className="flex-shrink-0 h-10 bg-gray-100 dark:bg-[#333333] flex justify-between items-center px-4 border-b border-gray-200 dark:border-gray-700">
+        <span className="font-medium text-sm text-gray-800 dark:text-gray-300">
+          {subject === 'sql' ? 'MySQL Editor' : 'Python Editor'}
+        </span>
       </div>
 
+      {/* Editor Container */}
+      <div className="flex-grow relative" ref={containerRef}>
+        {/* Monaco Editor will be mounted here */}
+      </div>
 
-      <div className="flex flex-col sm:flex-row gap-4">
-        <Button 
+      {/* Action Buttons */}
+      <div className="absolute bottom-4 right-4 z-20 flex items-center justify-end space-x-3">
+        <Button
+          variant="outline"
+          size="sm"
+          className="bg-white dark:bg-gray-600 dark:hover:bg-gray-500 border-gray-300 dark:border-gray-500 text-gray-700 dark:text-white hover:bg-gray-50"
           onClick={() => handleCodeExecution(false)}
           disabled={isProcessing}
-          className="bg-[#14B8A6] hover:bg-[#14B8A6]/90 text-white px-8 w-full sm:w-auto"
         >
-          {isProcessing ? (
-            <>
-              <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-              Running...
-            </>
-          ) : (
-            <>
-              <Play className="mr-2 h-4 w-4" />
-              Run Code
-            </>
-          )}
+          {isProcessing ? <Loader2 className="h-4 w-4 animate-spin mr-2" /> : <Play className="h-4 w-4 mr-2" />}
+          Run Code
         </Button>
-
-        <Button 
+        <Button
+          size="sm"
+          className="bg-green-600 hover:bg-green-700 text-white border-none"
           onClick={() => handleCodeExecution(true)}
           disabled={isProcessing}
-          variant="secondary"
-          className="w-full sm:w-auto"
         >
-          <Send className="mr-2 h-4 w-4" />
+          {isProcessing ? <Loader2 className="h-4 w-4 animate-spin mr-2" /> : <Send className="h-4 w-4 mr-2" />}
           Submit
-        </Button>
-
-        <Button 
-          onClick={clearOutput}
-          variant="outline" 
-          disabled={isProcessing}
-          className={`${
-            theme === 'dark' 
-              ? 'bg-transparent border-[#2a2d2e] text-gray-300 hover:bg-[#2a2d2e] hover:text-white' 
-              : 'bg-gray-100 border-gray-100 text-gray-700 hover:bg-gray-100 hover:text-gray-900'
-          } w-full sm:w-auto`}
-        >
-          Clear Output
         </Button>
       </div>
 
-
-      {(output || error) && (
-       
-        <div className={`p-4 font-mono text-sm rounded-xl ${
-          theme === 'dark' ? 'bg-[#181F26] text-gray-300' : 'bg-gray-100 text-gray-700'
-        }`}>
-          <div className="font-medium mb-2">Output:</div>
-          <pre className="whitespace-pre-wrap">
-          {output.error ? (
-        // Handle error output
-        <div className="text-red-600 bg-white-50 border border-grey-400 rounded-md p-4">
-          {/* <p className="font-bold"><u>Error-</u></p> */}
-          <p>{output.message}</p>
-          <p><strong>Details:</strong> {output.details}</p>
-          <p><strong>Error Code:</strong> {output.code}</p>
-        </div>
-      ) : Array.isArray(output) && output.length > 0 ? (
-        // Handle table output
-        <table className="w-full border-collapse">
-          <thead>
-            <tr className={theme === 'dark' ? 'bg-[#403f3f]' : 'bg-gray-200'}>
-              {Object.keys(output[0]).map((header, index) => (
-                <th key={index} className="border px-4 py-2">{header}</th>
-              ))}
-            </tr>
-          </thead>
-          <tbody>
-            {output.map((row, rowIndex) => (
-              <tr key={rowIndex} className={theme === 'dark' ? 'bg-[#262626]' : 'bg-gray-50'}>
-                {Object.values(row).map((cell, cellIndex) => (
-                  <td key={cellIndex} className="border px-4 py-2 whitespace-nowrap">
-                    {typeof cell === 'object' ? JSON.stringify(cell) : cell}
-                  </td>
-                ))}
-              </tr>
-            ))}
-          </tbody>
-        </table>
-      ) : (
-        // Handle simple string output
-        <p>{output}</p>
-      )}
-
-
-          </pre>
+      {/* Internal Output (conditionally rendered) */}
+      {!hideOutput && (
+        <div className="h-1/3 border-t border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-[#1e1e1e] overflow-auto p-4">
+          <h3 className="text-sm font-medium text-gray-500 dark:text-gray-400 mb-2">Output</h3>
+          {error ? (
+            <Alert variant="destructive">
+              <AlertCircle className="h-4 w-4" />
+              <AlertDescription>{error}</AlertDescription>
+            </Alert>
+          ) : output ? (
+            <pre className="text-sm font-mono whitespace-pre-wrap text-gray-800 dark:text-gray-200">
+              {typeof output === 'object' ? JSON.stringify(output, null, 2) : output}
+            </pre>
+          ) : (
+            <div className="text-sm text-gray-400 italic">Run code to see output...</div>
+          )}
         </div>
       )}
 
       {showFeedback && feedback && (
-        <Alert className={feedback.type === 'error' ? 'bg-red-100' : 'bg-green-100'}
-        variant={feedback.type === 'error' ? 'destructive' : 'default'}>
-          <AlertCircle className="h-4 w-4" />
-          <AlertDescription>
-            {feedback.message}
-            {feedback.result && feedback.expected && (
-              <div >
-                {/* <div>Your output: {JSON.stringify(feedback.result)}</div> */}
-                {/* <div>Expected: {JSON.stringify(feedback.expected)}</div> */}
-              </div>
-            )}
-          </AlertDescription>
-        </Alert>
+        <div className="absolute bottom-16 right-4 z-30 max-w-md">
+          <Alert className={feedback.type === 'error' ? 'bg-red-100 dark:bg-red-900/20 border-red-200 dark:border-red-800' : 'bg-green-100 dark:bg-green-900/20 border-green-200 dark:border-green-800'}
+            variant={feedback.type === 'error' ? 'destructive' : 'default'}>
+            <AlertCircle className="h-4 w-4" />
+            <AlertDescription className={feedback.type === 'error' ? 'text-red-800 dark:text-red-300' : 'text-green-800 dark:text-green-300'}>
+              {feedback.message}
+            </AlertDescription>
+          </Alert>
+        </div>
       )}
-
     </div>
   );
 }

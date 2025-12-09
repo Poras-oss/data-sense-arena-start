@@ -5,6 +5,8 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import { useState, useEffect } from "react";
 import Start from "./pages/Start";
+import DataSenseBattlegroundPage from "./pages/Home";
+import SqlBattlegroundLobby from "./pages/SqlBattlegroundLobby";
 import Dashboard from "./pages/Dashboard";
 import Community from "./pages/Community";
 import Leaderboard from "./pages/Leaderboard";
@@ -74,16 +76,19 @@ const App = () => {
                 <BrowserRouter>
                   <Routes>
                     {/* Public route - accessible without login */}
-                    {  <Route path="/" element={<iframe src="/home.html" style={{ width: '100%', height: '100vh', border: 'none' }} title="External Page" />} /> }
-                    
+                    {/* {<Route path="/" element={<iframe src="/home.html" style={{ width: '100%', height: '100vh', border: 'none' }} title="External Page" />} />} */}
+                    {<Route path="/" element={<DataSenseBattlegroundPage />} />}
+
                     {/* Protected routes - require authentication */}
-                    <Route 
-                      path="/start" 
+                    <Route
+                      path="/start"
                       element={
                         <ProtectedRoute>
-                          <Start />
+                          {/* <DataSenseBattlegroundPage /> */}
+                          {/* <Start /> */}
+                          <SqlBattlegroundLobby />
                         </ProtectedRoute>
-                      } 
+                      }
                     />
                     {/* <Route 
                       path="/dashboard" 
@@ -101,13 +106,13 @@ const App = () => {
                         </ProtectedRoute>
                       } 
                     /> */}
-                    <Route 
-                      path="/challenge" 
+                    <Route
+                      path="/challenge"
                       element={
                         <ProtectedRoute>
                           <Challenge />
                         </ProtectedRoute>
-                      } 
+                      }
                     />
                     {/* <Route 
                       path="/community" 
@@ -133,13 +138,13 @@ const App = () => {
                         </ProtectedRoute>
                       } 
                     /> */}
-                    <Route 
-                      path="/profile" 
+                    <Route
+                      path="/profile"
                       element={
                         <ProtectedRoute>
                           <Profile />
                         </ProtectedRoute>
-                      } 
+                      }
                     />
                     {/* <Route 
                       path="/profile-edit" 
@@ -149,7 +154,7 @@ const App = () => {
                         </ProtectedRoute>
                       } 
                     /> */}
-                    
+
                     {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
                     <Route path="*" element={<NotFound />} />
                   </Routes>
