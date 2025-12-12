@@ -4,13 +4,13 @@ import { Button } from "@/components/ui/button";
 import { AlertCircle, Play, Send } from "lucide-react";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 
-const CodeExecutionHandler = ({ 
+const CodeExecutionHandler = ({
   subject,
   userCode,
   questionData,
   onResultUpdate,
   userId,
-  questionId 
+  questionId
 }) => {
   const [isProcessing, setIsProcessing] = useState(false);
   const [output, setOutput] = useState('');
@@ -42,9 +42,10 @@ const CodeExecutionHandler = ({
   const handleSQLExecution = async (isSubmission) => {
     const response = await axios.get(
       `https://server.datasenseai.com/execute-sql/query?q=${encodeURIComponent(userCode)}`
+      // `http://localhost:4000/execute-sql/query?q=${encodeURIComponent(userCode)}`
     );
     const result = response.data;
-    
+
     if (!isSubmission) {
       setOutput(result);
       return;
@@ -56,7 +57,7 @@ const CodeExecutionHandler = ({
 
   const handlePythonExecution = async (isSubmission) => {
     const allTestCasesPassed = await checkAllTestCases(userCode, questionData.test_cases);
-    
+
     if (!isSubmission) {
       // For run operation, just show the output
       setOutput(allTestCasesPassed ? 'Test cases passed!' : 'Some test cases failed');
@@ -94,7 +95,7 @@ const CodeExecutionHandler = ({
   return (
     <div className="space-y-4">
       <div className="flex gap-4">
-        <Button 
+        <Button
           onClick={() => handleCodeExecution(false)}
           disabled={isProcessing}
           className="w-24"
@@ -102,8 +103,8 @@ const CodeExecutionHandler = ({
           <Play className="mr-2 h-4 w-4" />
           Run
         </Button>
-        
-        <Button 
+
+        <Button
           onClick={() => handleCodeExecution(true)}
           disabled={isProcessing}
           variant="secondary"

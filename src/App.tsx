@@ -54,6 +54,7 @@ const App = () => {
     if (isLoaded && isSignedIn) {
       const clerkId = user.id;
       axios.post('https://server.datasenseai.com/user-streak/update-activity', { clerkId })
+        // axios.post('http://localhost:4000/user-streak/update-activity', { clerkId })
         .then(response => {
           console.log('Activity updated:', response.data);
         })
@@ -71,6 +72,7 @@ const App = () => {
           <Sonner />
           <ProfileProvider>
             <WebSocketProvider url="https://server.datasenseai.com/">
+              {/* <WebSocketProvider url="http://localhost:3000/"> */}
               {/* Wrap NotificationProvider here */}
               <NotificationProvider>
                 <BrowserRouter>

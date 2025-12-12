@@ -9,61 +9,62 @@ const Result = ({ gameStatus, playerData, opponentData, player1Avatar, player2Av
   const [apiCallsComplete, setApiCallsComplete] = useState(false)
 
   // Function to update leaderboard
-const updateLeaderboardScore = async (userId, playerName, challengeType, gameStatus) => {
-  try {
-    // Convert challengeType format (e.g., "Bullet Surge" to "bullet-surge")
-    const formattedGameType = challengeType
-      .toLowerCase()
-      .replace(/\s+/g, '-');
-    
-    // Determine result and XP
-    let result, xpChange;
-    
-    if (gameStatus.isWinner) {
-      result = 'win';
-      xpChange = 1200;
-    } else if (gameStatus.isOpponentWon) {
-      result = 'lose';
-      xpChange = 800;
-    } else if (gameStatus.isTie) {
-      result = 'draw';
-      xpChange = 1000;
-    } else {
+  const updateLeaderboardScore = async (userId, playerName, challengeType, gameStatus) => {
+    try {
+      // Convert challengeType format (e.g., "Bullet Surge" to "bullet-surge")
+      const formattedGameType = challengeType
+        .toLowerCase()
+        .replace(/\s+/g, '-');
+
+      // Determine result and XP
+      let result, xpChange;
+
+      if (gameStatus.isWinner) {
+        result = 'win';
+        xpChange = 1200;
+      } else if (gameStatus.isOpponentWon) {
+        result = 'lose';
+        xpChange = 800;
+      } else if (gameStatus.isTie) {
+        result = 'draw';
+        xpChange = 1000;
+      } else {
+        return { success: false };
+      }
+
+      // API call
+      const response = await fetch(`https://server.datasenseai.com/battleground-leaderboard/update${formattedGameType}`, {
+        // const response = await fetch(`http://localhost:4000/battleground-leaderboard/update${formattedGameType}`, {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          clerkId: userId,
+          name: playerName,
+          result,
+          xpChange
+        })
+      });
+
+      const data = await response.json();
+      return { success: true, data };
+
+    } catch (error) {
+      console.error('Leaderboard update error:', error);
       return { success: false };
     }
-    
-    // API call
-    const response = await fetch(`https://server.datasenseai.com/battleground-leaderboard/update${formattedGameType}`, {
-      method: 'PUT',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        clerkId: userId,
-        name: playerName,
-        result,
-        xpChange
-      })
-    });
-    
-    const data = await response.json();
-    return { success: true, data };
-    
-  } catch (error) {
-    console.error('Leaderboard update error:', error);
-    return { success: false };
-  }
-};
-  
+  };
+
   useEffect(() => {
     // Handle game result API calls
     const saveGameResults = async () => {
       try {
         console.log("Starting API calls for game results...")
-      
+
         if (!userId) {
           console.error("User ID not found in storage")
           return
         }
-        
+
         // Determine result
         let result = "none"
         if (gameStatus.isWinner) {
@@ -73,26 +74,27 @@ const updateLeaderboardScore = async (userId, playerName, challengeType, gameSta
         } else if (gameStatus.isTie) {
           result = "tie"
         }
-        
+
         // Get challenge info from URL or localStorage
-        const challengeType = new URLSearchParams(window.location.search).get("challengeType") || 
-                             localStorage.getItem("challengeType")
-        const subject = new URLSearchParams(window.location.search).get("selectedSubject") || 
-                       localStorage.getItem("selectedSubject")
-        
+        const challengeType = new URLSearchParams(window.location.search).get("challengeType") ||
+          localStorage.getItem("challengeType")
+        const subject = new URLSearchParams(window.location.search).get("selectedSubject") ||
+          localStorage.getItem("selectedSubject")
+
         // Prepare game data
         const gameData = {
           gametype: challengeType,
-          playernames: [playerData, opponentData], 
-          subject: subject, 
+          playernames: [playerData, opponentData],
+          subject: subject,
           result: result
         }
-        
+
         console.log("Game data prepared:", gameData)
-        
+
         // 1. Update game history
         const historyResponse = await fetch("https://server.datasenseai.com/game-history/update-game-history", {
-          method: "POST", 
+          // const historyResponse = await fetch("http://localhost:4000/game-history/update-game-history", {
+          method: "POST",
           headers: {
             "Content-Type": "application/json",
           },
@@ -101,24 +103,25 @@ const updateLeaderboardScore = async (userId, playerName, challengeType, gameSta
             gameData: gameData,
           }),
         })
-        
+
         const historyResult = await historyResponse.json()
         console.log("Game history saved:", historyResult)
-        
+
         // 2. Credit fuel if player won
         if (gameStatus.isWinner) {
           try {
             const fuelResponse = await axios.post('https://server.datasenseai.com/fuel-engine/credit', {
+              // const fuelResponse = await axios.post('http://localhost:4000/fuel-engine/credit', {
               clerkId: userId,
               key: 'datawar-credit',
             })
-            
+
             console.log('Fuel credit response:', fuelResponse.data)
           } catch (error) {
             console.error("Error crediting fuel:", error)
           }
         }
-        
+
         setApiCallsComplete(true)
         console.log("All API calls completed successfully")
 
@@ -126,12 +129,12 @@ const updateLeaderboardScore = async (userId, playerName, challengeType, gameSta
           const leaderboardResult = await updateLeaderboardScore(
             userId,
             playerData,
-            challengeType || 
-              new URLSearchParams(window.location.search).get("challengeType") || 
-              localStorage.getItem("challengeType"),
+            challengeType ||
+            new URLSearchParams(window.location.search).get("challengeType") ||
+            localStorage.getItem("challengeType"),
             gameStatus
           );
-          
+
           if (leaderboardResult.success) {
             console.log("Leaderboard updated successfully");
           }
@@ -144,7 +147,7 @@ const updateLeaderboardScore = async (userId, playerName, challengeType, gameSta
         console.error("Error in game result API calls:", error)
       }
     }
-    
+
     // Execute API calls once when component mounts
     if (!apiCallsComplete) {
       saveGameResults()
@@ -259,14 +262,14 @@ const updateLeaderboardScore = async (userId, playerName, challengeType, gameSta
         </div>
 
         <div className="grid grid-cols-1 gap-4 px-6 pb-6">
-          <button 
+          <button
             onClick={() => window.location.href = '/'}
             className="py-3 px-4 bg-[#29498d] text-white rounded-md hover:bg-[#1e3a70] transition-colors"
           >
             Go back to home
           </button>
         </div>
-        
+
         {/* Add custom styles */}
         <style jsx>{`
           .cyan-avatar {
@@ -323,7 +326,7 @@ const PlayerInfo = ({ player, isWinner, playerAvatar, customClass }) => (
           alt={player.username}
           className="w-16 h-16 rounded-full object-cover absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2"
         />
-        
+
         {isWinner && (
           <div className="absolute -top-1 -right-1 bg-yellow-400 rounded-full p-1 z-10">
             <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
