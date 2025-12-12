@@ -162,12 +162,12 @@ const QuestionPanel = ({ questionData }) => {
                     {Array.isArray(questionData.subtopics) ? questionData.subtopics.join(', ') : questionData.subtopic}
                   </span>
                 )}
-                {questionData.ideal_time && (
+                {/* {questionData.ideal_time && (
                   <span className="flex items-center gap-1.5 px-3 py-1 text-xs font-semibold rounded-full capitalize bg-yellow-100 text-yellow-800 dark:bg-yellow-900 dark:text-yellow-300">
                     <Timer className="h-3 w-3" />
                     {questionData.ideal_time}
                   </span>
-                )}
+                )} */}
                 {questionData.company && questionData.company.map((company, compIndex) => (
                   <span key={compIndex} className="flex items-center gap-1.5 px-3 py-1 text-xs font-semibold rounded-full capitalize bg-indigo-100 text-indigo-800 dark:bg-indigo-900 dark:text-indigo-300">
                     <Building2 className="h-3 w-3" />

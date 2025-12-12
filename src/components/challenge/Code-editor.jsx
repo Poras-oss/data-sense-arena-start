@@ -19,7 +19,13 @@ export function CodeEditor({
   externalError,
   externalSetError,
   externalIsProcessing,
-  externalSetIsProcessing
+  externalSetIsProcessing,
+  onQuestionSolved, // NEW: Callback when question is solved
+  currentQuestionIndex = 0, // NEW: Track which question this is
+  onSubmitChallenge, // NEW: Handler for Submit Challenge button
+  isLastQuestion = false, // NEW: Show Submit Challenge button only on last question
+  totalQuestions = 1, // NEW: Total number of questions
+  solvedCount = 0 // NEW: Number of solved questions
 }) {
   const { theme } = useTheme();
   const editorRef = useRef(null);
@@ -75,6 +81,17 @@ export function CodeEditor({
     }
   }, [theme]);
 
+  // Update editor content when question changes
+  useEffect(() => {
+    if (editorRef.current && questionData) {
+      // Use setValue to replace the content
+      editorRef.current.setValue(questionData.boilerplate || '');
+      // Clear previous output/errors when switching questions
+      if (externalSetOutput) externalSetOutput(null);
+      if (externalSetError) externalSetError('');
+    }
+  }, [questionData]);
+
   const handleCodeExecution = async (isSubmission = false) => {
     const code = editorRef.current?.getValue();
     setIsProcessing(true);
@@ -106,6 +123,7 @@ export function CodeEditor({
 
     const response = await axios.get(
       `https://server.datasenseai.com/execute-sql/query?q=${encodeURIComponent(code)}`
+      // `http://localhost:4000/execute-sql/query?q=${encodeURIComponent(code)}`
     );
     const result = response.data;
 
@@ -236,23 +254,21 @@ export function CodeEditor({
     }
 
     if (isCorrect) {
-      const currentGame = JSON.parse(localStorage.getItem('currentGame'));
+      handleClick(); // Show confetti
 
-      handleClick();
+      // Notify parent component that this question is solved
+      // Parent will handle game submission logic
+      if (onQuestionSolved) {
+        onQuestionSolved({
+          questionId: questionData._id || questionData.id,
+          questionIndex: currentQuestionIndex,
+          isCorrect: true,
+          code: editorRef.current?.getValue(),
+          timestamp: new Date()
+        });
+      }
 
-      socket.emit('gameResult', {
-        gameId: currentGame.gameId,
-        winnerSocketId: socket.id,
-        winnerName: currentGame.playerName
-      }, (response) => {
-        if (response && response.status === 'ok') {
-          console.log('Game result emitted successfully:', response);
-        } else {
-          console.error('Failed to emit game result:', response?.error || 'Unknown error');
-        }
-      });
-
-      console.log('its correct and the socket should have emitted the event');
+      console.log('Question solved correctly - notified parent component');
     }
   };
 
@@ -301,6 +317,18 @@ export function CodeEditor({
           {isProcessing ? <Loader2 className="h-4 w-4 animate-spin mr-2" /> : <Send className="h-4 w-4 mr-2" />}
           Submit
         </Button>
+
+        {/* Submit Challenge Button - Only on last question */}
+        {isLastQuestion && onSubmitChallenge && (
+          <Button
+            size="sm"
+            className="bg-blue-600 hover:bg-blue-700 text-white border-none"
+            onClick={onSubmitChallenge}
+            disabled={isProcessing}
+          >
+            Submit Challenge
+          </Button>
+        )}
       </div>
 
       {/* Internal Output (conditionally rendered) */}
