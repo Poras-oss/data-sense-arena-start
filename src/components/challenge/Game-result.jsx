@@ -92,6 +92,8 @@ const Result = ({ gameStatus, playerData, opponentData, player1Avatar, player2Av
         console.log("Game data prepared:", gameData)
 
         // 1. Update game history
+        // BLOCKED: Backend now handles this via socket events to prevent duplicates/cheating
+        /* 
         const historyResponse = await fetch("https://server.datasenseai.com/game-history/update-game-history", {
           // const historyResponse = await fetch("http://localhost:4000/game-history/update-game-history", {
           method: "POST",
@@ -106,6 +108,7 @@ const Result = ({ gameStatus, playerData, opponentData, player1Avatar, player2Av
 
         const historyResult = await historyResponse.json()
         console.log("Game history saved:", historyResult)
+        */
 
         // 2. Credit fuel if player won
         if (gameStatus.isWinner) {
@@ -125,6 +128,7 @@ const Result = ({ gameStatus, playerData, opponentData, player1Avatar, player2Av
         setApiCallsComplete(true)
         console.log("All API calls completed successfully")
 
+        /*
         try {
           const leaderboardResult = await updateLeaderboardScore(
             userId,
@@ -141,6 +145,7 @@ const Result = ({ gameStatus, playerData, opponentData, player1Avatar, player2Av
         } catch (error) {
           console.error("Error updating leaderboard:", error);
         }
+        */
 
 
       } catch (error) {

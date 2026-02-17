@@ -322,11 +322,11 @@ export function CodeEditor({
         {isLastQuestion && onSubmitChallenge && (
           <Button
             size="sm"
-            className="bg-blue-600 hover:bg-blue-700 text-white border-none"
+            className="bg-cyan-600 hover:bg-cyan-700 text-white border-none"
             onClick={onSubmitChallenge}
             disabled={isProcessing}
           >
-            Submit Challenge
+            Execute Payload
           </Button>
         )}
       </div>

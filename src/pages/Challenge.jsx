@@ -253,6 +253,22 @@ export default function DataWars() {
     };
   }, [socket, isConnected, userId]);
 
+  // Activity Tracking Implementation
+  const activityRecordedRef = useRef(false);
+
+  useEffect(() => {
+    const isGameFinished = gameStatus.isWinner || gameStatus.isOpponentWon || gameStatus.isTie;
+    if (isGameFinished && user?.id && !activityRecordedRef.current) {
+      activityRecordedRef.current = true;
+      // Check for local vs prod URL - defaulting to prod as per other files
+      const apiUrl = 'https://server.datasenseai.com/user-streak/update-activity';
+
+      axios.post(apiUrl, { clerkId: user.id })
+        .then(res => console.log('Battleground Activity Recorded:', res.data))
+        .catch(err => console.error('Failed to record Battleground activity:', err));
+    }
+  }, [gameStatus, user]);
+
   const toggleFullScreen = () => {
     if (!document.fullscreenElement) {
       document.documentElement.requestFullscreen()
