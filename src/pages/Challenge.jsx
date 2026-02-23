@@ -12,6 +12,7 @@ import GameStartAnimation from "@/components/challenge/GameStartAnimation"
 import ConnectionStatusPopup from "@/components/challenge/ConnectionStatusPopup"
 import PlayerAbandoned from "@/components/challenge/PlayerAbondedPopup"
 import { useUser, UserButton } from '@clerk/clerk-react'
+import axios from 'axios'
 import Split from 'react-split'
 import { createAvatar } from '@dicebear/core';
 import { dylan } from '@dicebear/collection';
@@ -106,17 +107,9 @@ export default function DataWars() {
   };
 
   useEffect(() => {
-    if (isBot === true && isUserWon) {
-      setGameStatus({
-        isWinner: true,
-        isOpponentWon: false,
-        winnerName: data?.players[0], // Player's name
-        isTie: false,
-        margin: "You completed the challenge faster",
-      });
-    } else {
-      console.log(isUserWon)
-    }
+    // We intentionally ignore auto-winning on a single question solve for bot games now
+    // as it conflicts with the multi-question challenge flow.
+    // The game will correctly end either when the bot timer expires or when the user manually submits.
   }, [isBot, isUserWon])
 
   // Add error handling for avatar generation
@@ -207,7 +200,7 @@ export default function DataWars() {
     const handleGameEnded = async (data) => {
       console.log("Game ended event received:", data);
 
-      const { isWinner, isOpponentWon, winnerName } = data;
+      const { isWinner, isOpponentWon, winnerName, yourScore, opponentScore } = data;
 
       // Update game status
       setGameStatus({
@@ -215,7 +208,9 @@ export default function DataWars() {
         isOpponentWon,
         winnerName,
         isTie: !isWinner && !isOpponentWon,
-        margin: isWinner ? "You won!" : isOpponentWon ? "Opponent won!" : "It's a tie!"
+        margin: isWinner ? "You won!" : isOpponentWon ? "Opponent won!" : "It's a tie!",
+        yourScore,
+        opponentScore
       });
 
       let result = "none";
@@ -418,17 +413,15 @@ export default function DataWars() {
       }
     }));
 
-    // Auto-submit if all questions are correct
+    // Auto-submit if all questions are correct (REMOVED)
+    // The user explicitly requested to click the final submit button instead of auto-submitting
     const newResults = {
       ...questionResults,
       [result.questionIndex]: { isCorrect: result.isCorrect }
     };
-    const correctCount = Object.values(newResults).filter(r => r.isCorrect).length;
 
-    if (correctCount === totalQuestions) {
-      console.log('All questions correct - auto-submitting');
-      setTimeout(() => handleGameSubmit(newResults), 1000); // Small delay to show confetti
-    }
+    // We just update the state, but we don't call handleGameSubmit here anymore
+    // so the user has to click the specific Submit Challenge button on the last question.
   };
 
   // NEW: Calculate score
@@ -443,15 +436,9 @@ export default function DataWars() {
 
   // NEW: Handle submit button click
   const handleSubmitClick = () => {
-    const { correctCount } = calculateScore();
-
-    if (correctCount === totalQuestions) {
-      // All correct - submit immediately
-      handleGameSubmit();
-    } else {
-      // Show confirmation dialog
-      setShowSubmitDialog(true);
-    }
+    // The user explicitly requested that clicking "Execute Payload" directly submits the game
+    // and bypasses the confirmation dialog, regardless of whether 100% of questions are correct.
+    handleGameSubmit();
   };
 
   // NEW: Actually submit the game
