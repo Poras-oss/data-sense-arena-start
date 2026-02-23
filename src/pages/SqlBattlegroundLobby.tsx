@@ -14,11 +14,13 @@ import {
   Play,
   Loader2,
   Copy,
-  Lock
+  Lock,
+  Mail
 } from "lucide-react";
+import { FaWhatsapp } from "react-icons/fa";
 import { motion, AnimatePresence } from "framer-motion";
 import { useUser } from "@clerk/clerk-react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useSearchParams } from "react-router-dom";
 import { useWebSocketContext } from "@/util/WebsocketProvider";
 import { useNotification } from "@/hooks/NotificationProvider";
 // Ensure this path matches your file structure
@@ -83,6 +85,7 @@ const SqlBattlegroundLobby: React.FC = () => {
   // --- 1. Hooks & Context ---
   const { user, isLoaded } = useUser();
   const navigate = useNavigate();
+  const [searchParams] = useSearchParams();
   const { socket, isConnected } = useWebSocketContext();
   const { showSuccess, showError, showInfo } = useNotification();
   const audioRef = useRef<HTMLAudioElement | null>(null);
@@ -139,6 +142,15 @@ const SqlBattlegroundLobby: React.FC = () => {
     return () => clearInterval(timer);
   }, [isSearching]);
 
+  // Handle URL Join Link
+  useEffect(() => {
+    const gameIdFromUrl = searchParams.get("gameId");
+    if (gameIdFromUrl) {
+      setShowTeamModal(true);
+      setJoinGameIdInput(gameIdFromUrl);
+    }
+  }, [searchParams]);
+
   useEffect(() => {
     if (!audioRef.current) return;
     if (soundOn) {
@@ -194,8 +206,13 @@ const SqlBattlegroundLobby: React.FC = () => {
       setIsJoining(false);
       localStorage.setItem("gameData", JSON.stringify(data));
       const botParam = data.isBot ? '&isNexus=true' : '';
+
+      // Fix: Prioritize server time (challengeDuration from Create, time from matching)
+      // Otherwise fallback to local state 'timeMinutes' only if server data missing
+      const gameTime = data.customTime || data.challengeDuration || data.time || timeMinutes;
+
       navigate(
-        `/challenge?gameId=${data.gameId}&challengeType=${data.challengeType || getFormattedMode()}&selectedSubject=${data.subject || topic}&customTime=${data.customTime || timeMinutes}${botParam}`,
+        `/challenge?gameId=${data.gameId}&challengeType=${data.challengeType || getFormattedMode()}&selectedSubject=${data.subject || topic}&customTime=${gameTime}${botParam}`,
         { state: { data } }
       );
     };
@@ -544,6 +561,31 @@ const SqlBattlegroundLobby: React.FC = () => {
                     <div className="flex items-center justify-center gap-2 bg-slate-950 p-4 rounded-xl border border-cyan-500/30 mb-4">
                       <span className="text-3xl font-mono font-bold text-cyan-400 tracking-widest select-all">{generatedGameId}</span>
                       <button onClick={() => navigator.clipboard.writeText(generatedGameId || "")} className="text-slate-500 hover:text-white cursor-pointer"><Copy size={16} /></button>
+                    </div>
+
+                    <div className="flex gap-3 justify-center mb-4">
+                      <button
+                        onClick={() => {
+                          const joinLink = `${window.location.origin}${window.location.pathname}?gameId=${generatedGameId}`;
+                          const message = `DataSense Battleground\n\nJoin my SQL Battle! Click here: ${joinLink}`;
+                          window.open(`https://wa.me/?text=${encodeURIComponent(message)}`, '_blank');
+                        }}
+                        className="flex items-center gap-2 px-4 py-2 bg-emerald-500/20 text-emerald-400 border border-emerald-500/50 rounded-lg hover:bg-emerald-500/30 transition text-xs font-bold uppercase tracking-wide cursor-pointer"
+                      >
+                        <FaWhatsapp size={16} /> WhatsApp
+                      </button>
+                      <button
+                        onClick={() => {
+                          const joinLink = `${window.location.origin}${window.location.pathname}?gameId=${generatedGameId}`;
+                          const subject = "Join my SQL Battle";
+                          const body = `DataSense Battleground\n\nJoin my SQL Battle! Click here: ${joinLink}`;
+                          // Using Gmail web interface for better browser integration
+                          window.open(`https://mail.google.com/mail/?view=cm&fs=1&su=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`, '_blank');
+                        }}
+                        className="flex items-center gap-2 px-4 py-2 bg-blue-500/20 text-blue-400 border border-blue-500/50 rounded-lg hover:bg-blue-500/30 transition text-xs font-bold uppercase tracking-wide cursor-pointer"
+                      >
+                        <Mail size={16} /> Gmail
+                      </button>
                     </div>
                     <p className="text-xs text-slate-500 animate-pulse">Waiting for squadmates...</p>
                   </div>
